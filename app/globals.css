@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    /* Light background */
+    --foreground: 80 10% 10%;
+    /* Dark text */
+    --muted: 0 10% 88%;
+    /* Muted background */
+    --muted-foreground: 210 0% 40%;
+    /* Muted text */
+    --popover: 0 0% 100%;
+    /* Popover background */
+    --popover-foreground: 0 2% 10%;
+    /* Popover text */
+    --card: 255 0% 95%;
+    /* Card background */
+    --card-foreground: 210 0% 10%;
+    /* Card text */
+    --border: 210 0% 90%;
+    /* Light border */
+    --input: 210 0% 90%;
+    /* Input background */
+    --primary: 358, 85%, 52%;
+    /* Primary color set to the red you provided */
+    --primary-foreground: 358, 0%, 95%;
+    /* Light text on primary */
+
+    --secondary: hsl(210, 0%, 92%);
+    /* Light secondary color */
+    --secondary-foreground: hsl(210, 0%, 32%);
+    /* Darker secondary text */
+
+    --accent: 0 10% 94%;
+    /* Accent color */
+    --accent-foreground: hsl(0, 0%, 45%);
+    /* Darker accent text */
+
+    --destructive: 0, 100%, 30%;
+    /* Destructive action color (red) */
+    --destructive-foreground: hsl(0, 0%, 85%);
+    /* Light text on destructive */
+    --ring: 358 85% 52%;
+    --radius: 0.5rem;
+    --chart-1: 358 85% 52%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --sidebar-background: 20 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 0% 86%;
+    --sidebar-accent-foreground: 240 0% 10%;
+    --sidebar-border: 358 54% 50%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 358 55.25% 4.16%;
+    --foreground: 358 8.5% 97.6%;
+    --muted: 358 8.5% 18.72%;
+    --muted-foreground: 358 8.5% 55.2%;
+    --popover: 358 32.7% 1.56%;
+    --popover-foreground: 358 8.5% 97.6%;
+    --card: 358 32.7% 1.56%;
+    --card-foreground: 358 8.5% 97.6%;
+    --border: 358 8.5% 18.72%;
+    --input: 358 8.5% 18.72%;
+    --primary: 358 85% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 358 8.5% 18.72%;
+    --secondary-foreground: 358 8.5% 97.6%;
+    --accent: 358 8.5% 18.72%;
+    --accent-foreground: 358 8.5% 97.6%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 358 8.5% 97.6%;
+    --ring: 358 85% 52%;
+
+    /* Keeping your custom properties */
+    --chart-1: 358 85% 52%;
+    --chart-2: 358 8.5% 74%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 358 32.7% 1.56%;
+    --sidebar-foreground: 358 8.5% 97.6%;
+    --sidebar-primary: 358 85% 52%;
+    --sidebar-primary-foreground: 358 8.5% 5.2%;
+    --sidebar-accent: 358 8.5% 18.72%;
+    --sidebar-accent-foreground: 358 8.5% 97.6%;
+    --sidebar-border: 358 8.5% 18.72%;
+    --sidebar-ring: 358 85% 52%;
+  }
+
+  @layer base {
+    * {
+      @apply border-border;
+    }
+
+    body {
+      @apply box-border bg-background text-foreground;
+    }
+  }
+
+  @layer utilities {
+    .min-h-screen {
+      min-height: 100vh;
+      /* Fallback */
+      min-height: 100dvh;
+    }
+
+    .h-screen {
+      height: 100vh;
+      /* Fallback */
+      height: 100dvh;
+    }
+  }
+
+  @layer base {
+    * {
+      @apply border-border;
+    }
+
+    body {
+      @apply bg-background text-foreground;
+    }
+  }
+}

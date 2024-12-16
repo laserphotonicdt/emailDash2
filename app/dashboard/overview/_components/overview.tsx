@@ -1,18 +1,19 @@
-import { AreaGraph } from './area-graph';
-import { BarGraph } from './bar-graph';
-import { PieGraph } from './pie-graph';
-import { CalendarDateRangePicker } from '@/components/date-range-picker';
-import PageContainer from '@/components/layout/page-container';
-import { RecentSales } from './recent-sales';
-import { Button } from '@/components/ui/button';
+import { AreaGraph } from "./area-graph";
+import { BarGraph } from "./bar-graph";
+import { PieGraph } from "./pie-graph";
+import { CalendarDateRangePicker } from "@/components/date-range-picker";
+import PageContainer from "@/components/layout/page-container";
+import { RecentSales } from "./recent-sales";
+import { Button } from "@/components/ui/button";
+import FunnelGraphCard from './funnel-graph-card.tsx';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function OverViewPage() {
   return (
@@ -138,10 +139,15 @@ export default function OverViewPage() {
                 </CardContent>
               </Card>
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <div className="col-span-4">
-                <BarGraph />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
+              <div className="col-span-12">
+                {/* <BarGraph /> 
               </div>
+              <div>*/}
+                <FunnelGraphCard />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
               <Card className="col-span-4 md:col-span-3">
                 <CardHeader>
                   <CardTitle>Recent Sales</CardTitle>

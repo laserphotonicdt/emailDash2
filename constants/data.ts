@@ -131,18 +131,55 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
-    title: 'Campaigns',
-    url: '/dashboard/campaigns',
-    icon: 'mail',
+    title: 'Analysis',
+    url: '/dashboard/analysis',
+    icon: 'chartPie',
     isActive: false,
     shortcut: ['c', 'c'],
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
-    title: 'Employee',
+    title: 'Mail Servers',
+    url: '/dashboard/mail-servers',
+    icon: 'server',
+    shortcut: ['s', 's'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Campaigns',
+    url: '#',
+    icon: 'mail',
+    isActive: false,
+    shortcut: ['c', 'c'],
+    items: [
+      {
+        title: 'Create New',
+        url: '/dashboard/campaigns/create',
+        icon: 'plus',
+        shortcut: ['m', 'm']
+      },
+      {
+        title: 'View Campaigns',
+        shortcut: ['l', 'l'],
+        url: '/dashboard/campaigns',
+        icon: 'login'
+      }
+    ] 
+  },
+  {
+    title: 'Employees',
     url: '/dashboard/employee',
     icon: 'user',
     shortcut: ['e', 'e'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Activity Log',
+    url: '/dashboard/log',
+    icon: 'listCollapse',
+    shortcut: ['p', 'p'],
     isActive: false,
     items: [] // No child items
   },
@@ -155,14 +192,22 @@ export const navItems: NavItem[] = [
     items: [] // No child items
   },
   {
-    title: 'Account',
+    title: 'Integrations',
+    url: '/dashboard/integrations',
+    icon: 'unplug',
+    shortcut: ['p', 'p'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Admin',
     url: '#', // Placeholder as there is no direct link for the parent
     icon: 'billing',
     isActive: true,
 
     items: [
       {
-        title: 'Profile',
+        title: 'Users',
         url: '/dashboard/profile',
         icon: 'userPen',
         shortcut: ['m', 'm']
@@ -175,12 +220,12 @@ export const navItems: NavItem[] = [
       }
     ]
   },
-  {
-    title: 'Kanban',
-    url: '/dashboard/kanban',
-    icon: 'kanban',
-    shortcut: ['k', 'k'],
-    isActive: false,
-    items: [] // No child items
-  }
+  // {
+  //   title: 'Kanban',
+  //   url: '/dashboard/kanban',
+  //   icon: 'kanban',
+  //   shortcut: ['k', 'k'],
+  //   isActive: false,
+  //   items: [] // No child items
+  // }
 ];

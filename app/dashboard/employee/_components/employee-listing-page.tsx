@@ -1,68 +1,67 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import PageContainer from '@/components/layout/page-container';
-import { buttonVariants } from '@/components/ui/button';
-import { Heading } from '@/components/ui/heading';
-import { Separator } from '@/components/ui/separator';
-import { Employee } from '@/constants/data';
-import { fakeUsers } from '@/constants/mock-api';
-import { searchParamsCache } from '@/lib/searchparams';
-import { cn } from '@/lib/utils';
-import { Plus } from 'lucide-react';
-import Link from 'next/link';
-import EmployeeTable from './employee-tables';
+import { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
+interface Employee {
+  id: string;
+  name: string;
+  position: string;
+  created_at: string;
+}
 
-type TEmployeeListingPage = {
+interface EmployeeListingPageProps {
   employees: Employee[];
-};
+}
 
-// export default async function EmployeeListingPage({}: TEmployeeListingPage) {
-  export default function EmployeeListingPage({ employees }: TEmployeeListingPage) {
-  // Showcasing the use of search params cache in nested RSCs
-  const page = searchParamsCache.get('page');
-  const search = searchParamsCache.get('q');
-  const gender = searchParamsCache.get('gender');
-  const pageLimit = searchParamsCache.get('limit');
-  // const [employees, setEmployees] = useState<Employee[]>([]);
-  // const [totalUsers, setTotalUsers] = useState(0);
-  const totalUsers = employees.length;
-  
-  const filters = {
-    page,
-    limit: pageLimit,
-    ...(search && { search }),
-    ...(gender && { genders: gender })
-  };
+export default function EmployeeListingPage({
+  employees: initialEmployees,
+}: EmployeeListingPageProps) {
+  const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
+  const supabase = createClient();
 
-  // mock api call
-  //const data = await fakeUsers.getUsers(filters);
-  //const totalUsers = data.total_users;
-  //const employee: Employee[] = data.users;
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      const { data, error } = await supabase
+        .from("employees")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-  // const employees = await getEmployees();
-  // const totalUsers = employees.length;
+      if (error) {
+        console.error("Error fetching employees:", error);
+      } else {
+        setEmployees(data);
+      }
+    };
+    fetchEmployees();
+  }, []);
+
+  if (!employees) return <div>Loading employees...</div>;
 
   return (
-    <PageContainer scrollable>
-      <div className="space-y-4">
-        <div className="flex items-start justify-between">
-          <Heading
-            title={`Employee (${totalUsers})`}
-            description="Manage employees (Server side table functionalities.)"
-          />
-
-          <Link
-            href={'/dashboard/employee/new'}
-            className={cn(buttonVariants({ variant: 'default' }))}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add New
-          </Link>
-        </div>
-        <Separator />
-        <EmployeeTable data={employees} totalData={totalUsers} />
+    <div className="p-4">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">Employees</h1>
+        <Link
+          href={"/dashboard/employee/new"}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4"
+        >
+          <Plus className="mr-2 h-4 w-4" /> Add New
+        </Link>
       </div>
-    </PageContainer>
+      <div className="grid gap-4">
+        {employees.map((employee) => (
+          <div key={employee.id} className="p-4 border rounded-lg">
+            <h2 className="font-semibold">{employee.name}</h2>
+            <p className="text-sm text-gray-600">{employee.position}</p>
+            <div className="mt-2 text-xs text-gray-500">
+              Created: {new Date(employee.created_at).toLocaleString()}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

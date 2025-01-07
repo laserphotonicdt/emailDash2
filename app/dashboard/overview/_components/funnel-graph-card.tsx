@@ -2,12 +2,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  FunnelChart,
-  FunnelSeries,
-  FunnelArc,
-  FunnelLabel,
-} from "reaviz";
+import { FunnelChart, FunnelSeries, FunnelArc, FunnelLabel } from "reaviz";
 
 const CustomFunnelLabel = ({ data }) => (
   <g>
@@ -81,7 +76,7 @@ const FunnelGraphCard = () => {
             <FunnelSeries
               arc={
                 <FunnelArc
-                  colorScheme={["#dc000055","#dc0000", "#780000", "#fdc500" ]}
+                  colorScheme={["#dc000055", "#dc0000", "#780000", "#fdc500"]}
                   variant="layered"
                   gradient={null}
                   strokeWidth={1}
@@ -93,7 +88,6 @@ const FunnelGraphCard = () => {
                   format={(d) => <CustomFunnelLabel data={d} />}
                 />
               }
-              
             />
           }
         />

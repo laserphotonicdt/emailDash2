@@ -1,10 +1,10 @@
-'use client';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+"use client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Collapsible,
   CollapsibleContent,
-  CollapsibleTrigger
-} from '@/components/ui/collapsible';
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,8 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -27,9 +27,9 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarRail
-} from '@/components/ui/sidebar';
-import { navItems } from '@/constants/data';
+  SidebarRail,
+} from "@/components/ui/sidebar";
+import { navItems } from "@/constants/data";
 import {
   BadgeCheck,
   Bell,
@@ -37,23 +37,28 @@ import {
   ChevronsUpDown,
   CreditCard,
   GalleryVerticalEnd,
-  LogOut
-} from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import * as React from 'react';
-import { Icons } from '../icons';
+  LogOut,
+} from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
+import type { Session } from "@supabase/supabase-js";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import * as React from "react";
+import { Icons } from "../icons";
 
 export const company = {
-  name: 'LASE',
+  name: "LASE",
   logo: GalleryVerticalEnd,
-  plan: 'Enterprise'
+  plan: "Enterprise",
 };
 
-export default function AppSidebar() {
-  const { data: session } = useSession();
+interface AppSidebarProps {
+  session: Session | null;
+}
+
+export default function AppSidebar({ session }: AppSidebarProps) {
   const pathname = usePathname();
+  const supabase = createClient();
 
   return (
     <Sidebar collapsible="icon">

@@ -21,22 +21,37 @@ export const columns: ColumnDef<Campaign>[] = [
   {
     accessorKey: "date",
     header: "Date",
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("date"));
+      const formatted = date.toLocaleDateString();
+      return <div className="font-medium">{formatted}</div>;
+    },
   },
   {
     accessorKey: "startDate",
-    header: "Campaign Start Date",
+    header: "Start Date",
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("startDate"));
+      const formatted = date.toLocaleDateString();
+      return <div className="font-medium">{formatted}</div>;
+    },
   },
   {
     accessorKey: "endDate",
-    header: "Campaign End Date",
+    header: "End Date",
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("endDate"));
+      const formatted = date.toLocaleDateString();
+      return <div className="font-medium">{formatted}</div>;
+    },
   },
   {
     accessorKey: "emailCategory",
-    header: "Email Category",
+    header: "Category",
   },
   {
     accessorKey: "campaignName",
-    header: "Campaign Name",
+    header: "Name",
   },
   {
     accessorKey: "subjectLine",
@@ -52,7 +67,7 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "industryVertical",
-    header: "Industry Vertical",
+    header: "Vertical",
   },
   {
     accessorKey: "senderUrl",

@@ -1,15 +1,21 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { Campaign } from "@/app/dashboard/campaigns/_components/campaign-tables/columns";
+import { ButtonProps } from "../button";
+import * as React from "react";
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 
-export interface DataTableProps<TData> {
-  columns: ColumnDef<TData>[];
-  data: TData[];
-  isLoading?: boolean;
-}
+export type { ButtonProps };
 
-export interface DataTableToolbarProps<TData> {
-  filters?: Record<string, string>;
-  onFilterChange?: (filters: Record<string, string>) => void;
-  searchQuery?: string;
-  onSearchChange?: (query: string) => void;
-}
+export type DropdownMenuProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.Root
+>;
+
+export type DropdownMenuTriggerProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.Trigger
+>;
+
+export type DropdownMenuContentProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.Content
+>;
+
+export type DropdownMenuCheckboxItemProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.CheckboxItem
+>;

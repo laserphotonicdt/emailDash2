@@ -1,42 +1,18 @@
 "use client";
 
-import { DataTableFilterBox } from "@/components/ui/table/data-table-filter-box";
-import { DataTableResetFilter } from "@/components/ui/table/data-table-reset-filter";
-import { DataTableSearch } from "@/components/ui/table/data-table-search";
-import {
-  CATEGORY_OPTIONS,
-  useProductTableFilters,
-} from "./use-campaign-table-filters";
+import { useCampaignTableFilters } from "./use-campaign-table-filters";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Cross2Icon } from "@radix-ui/react-icons";
 
-export default function ProductTableAction() {
-  const {
-    categoriesFilter,
-    setCategoriesFilter,
-    isAnyFilterActive,
-    resetFilters,
-    searchQuery,
-    setPage,
-    setSearchQuery,
-  } = useProductTableFilters();
-  return (
-    <div className="flex flex-wrap items-center gap-4">
-      <DataTableSearch
-        searchKey="name"
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        setPage={setPage}
-      />
-      <DataTableFilterBox
-        filterKey="categories"
-        title="Categories"
-        options={CATEGORY_OPTIONS}
-        setFilterValue={setCategoriesFilter}
-        filterValue={categoriesFilter}
-      />
-      <DataTableResetFilter
-        isFilterActive={isAnyFilterActive}
-        onReset={resetFilters}
-      />
-    </div>
-  );
+interface CampaignTableActionProps {
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+}
+
+export function CampaignTableAction({
+  searchQuery,
+  onSearchChange,
+}: CampaignTableActionProps) {
+  return <div className="flex items-center gap-2"></div>;
 }

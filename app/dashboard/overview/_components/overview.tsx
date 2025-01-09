@@ -5,7 +5,7 @@ import { CalendarDateRangePicker } from "@/components/date-range-picker";
 import PageContainer from "@/components/layout/page-container";
 import { RecentSales } from "./recent-sales";
 import { Button } from "@/components/ui/button";
-import FunnelGraphCard from './funnel-graph-card.tsx';
+import FunnelGraphCard from "./funnel-graph-card.tsx";
 import {
   Card,
   CardContent,
@@ -141,11 +141,9 @@ export default function OverViewPage() {
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
               <div className="col-span-12">
-                {/* <BarGraph /> 
+                <BarGraph />
               </div>
-              <div>*/}
-                <FunnelGraphCard />
-              </div>
+              <div>{/*  <FunnelGraphCard /> */}</div>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
               <Card className="col-span-4 md:col-span-3">

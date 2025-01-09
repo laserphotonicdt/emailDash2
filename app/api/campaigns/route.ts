@@ -1,47 +1,43 @@
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  const apiKey = process.env.SMTP_API_KEY;
-  const apiUrl = "https://api.smtp.com/v4/analytics";
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const filters = Object.fromEntries(searchParams.entries());
 
-  try {
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: "application/json",
-      },
-    });
+  const supabase = createRouteHandlerClient({ cookies });
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch data from SMTP.com API");
-    }
+  let query = supabase
+    .from("campaigns")
+    .select("*")
+    .order("date", { ascending: false });
 
-    const data = await response.json();
-
-    // Process the data as needed
-    const processedData = {
-      sent: data.sent || 0,
-      delivered: data.delivered || 0,
-      opened: data.opened || 0,
-      clicked: data.clicked || 0,
-    };
-
-    return NextResponse.json(processedData);
-  } catch (error) {
-    console.error("Detailed error:", error);
-    if (error instanceof Error) {
-      return NextResponse.json(
-        { error: "Internal Server Error", details: error.message },
-        { status: 500 }
-      );
-    } else {
-      return NextResponse.json(
-        {
-          error: "Internal Server Error",
-          details: "An unknown error occurred",
-        },
-        { status: 500 }
-      );
-    }
+  // Apply filters
+  if (filters.industry) {
+    query = query.eq("industry", filters.industry);
   }
+  if (filters.vertical) {
+    query = query.eq("vertical", filters.vertical);
+  }
+  if (filters.owner) {
+    query = query.eq("owner", filters.owner);
+  }
+  if (filters.status) {
+    query = query.eq("status", filters.status);
+  }
+  if (filters.mailServer) {
+    query = query.eq("mail_server", filters.mailServer);
+  }
+  if (filters.search) {
+    query = query.ilike("campaign_name", `%${filters.search}%`);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json(data);
 }

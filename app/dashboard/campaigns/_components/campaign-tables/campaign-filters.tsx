@@ -1,87 +1,86 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { DateRangePicker } from "@/components/date-range-picker";
 import { Button } from "@/components/ui/button";
-import { useEmployeeTableFilters } from "./use-employee-table-filters";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Filter } from "lucide-react";
+import { Table } from "@tanstack/react-table";
 
-export function EmployeeFilters() {
-  const {
-    searchQuery,
-    setSearchQuery,
-    positionFilter,
-    setPositionFilter,
-    dateRangeFilter,
-    setDateRangeFilter,
-    adminFilter,
-    setAdminFilter,
-    resetFilters,
-    isAnyFilterActive,
-  } = useEmployeeTableFilters();
+interface CampaignFiltersProps<TData> {
+  table: Table<TData>;
+  filters: Record<string, string>;
+  onFilterChange: (filters: Record<string, string>) => void;
+}
 
-  const currentSearchQuery = searchQuery ?? "";
-  const currentPositionFilter = positionFilter ?? "";
-  const currentAdminFilter = adminFilter ?? "";
-  const currentDateRangeFilter = dateRangeFilter ?? {
-    from: undefined,
-    to: undefined,
-  };
-
+export function CampaignFilters<TData>({
+  table,
+  filters,
+  onFilterChange,
+}: CampaignFiltersProps<TData>) {
   return (
-    <div className="flex flex-col gap-4 mb-4">
-      <div className="flex gap-4">
-        <Input
-          placeholder="Search by name..."
-          value={currentSearchQuery}
-          onChange={(e) => setSearchQuery(e.target.value || null)}
-          className="max-w-sm"
-        />
+    <div className="flex items-center gap-2">
+      <Input
+        placeholder="Search campaigns..."
+        value={filters.search || ""}
+        onChange={(e) => onFilterChange({ ...filters, search: e.target.value })}
+        className="h-8 w-[150px] lg:w-[250px]"
+      />
 
-        <Select
-          value={currentPositionFilter}
-          onValueChange={(value) => setPositionFilter(value || null)}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Position" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="marketing">Marketing</SelectItem>
-            <SelectItem value="hr">HR</SelectItem>
-            <SelectItem value="analyst">Analyst</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={currentAdminFilter}
-          onValueChange={(value) => setAdminFilter(value || null)}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Admin Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="true">Admin</SelectItem>
-            <SelectItem value="false">Not Admin</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <DateRangePicker
-          value={currentDateRangeFilter}
-          onChange={(range) => setDateRangeFilter(range || null)}
-        />
-      </div>
-
-      {isAnyFilterActive && (
-        <Button variant="ghost" onClick={resetFilters} className="w-fit">
-          Clear Filters
-        </Button>
-      )}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="h-8">
+            <Filter className="mr-2 h-4 w-4" />
+            Filters
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {table.getColumn("industryVertical") && (
+            <DropdownMenuCheckboxItem
+              checked={!!filters.industry}
+              onCheckedChange={(value) =>
+                onFilterChange({ ...filters, industry: value ? "true" : "" })
+              }
+            >
+              Industry
+            </DropdownMenuCheckboxItem>
+          )}
+          {table.getColumn("owner") && (
+            <DropdownMenuCheckboxItem
+              checked={!!filters.owner}
+              onCheckedChange={(value) =>
+                onFilterChange({ ...filters, owner: value ? "true" : "" })
+              }
+            >
+              Owner
+            </DropdownMenuCheckboxItem>
+          )}
+          {table.getColumn("status") && (
+            <DropdownMenuCheckboxItem
+              checked={!!filters.status}
+              onCheckedChange={(value) =>
+                onFilterChange({ ...filters, status: value ? "true" : "" })
+              }
+            >
+              Status
+            </DropdownMenuCheckboxItem>
+          )}
+          {table.getColumn("senderUrl") && (
+            <DropdownMenuCheckboxItem
+              checked={!!filters.mailServer}
+              onCheckedChange={(value) =>
+                onFilterChange({ ...filters, mailServer: value ? "true" : "" })
+              }
+            >
+              Mail Server
+            </DropdownMenuCheckboxItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

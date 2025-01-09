@@ -1,34 +1,54 @@
-import { Product } from "@/constants/data";
-import { fakeProducts } from "@/constants/mock-api";
-import { searchParamsCache } from "@/lib/searchparams";
-import { DataTable as ProductTable } from "@/components/ui/table/data-table";
-import { columns } from "./product-tables/columns";
+"use client";
 
-type ProductListingPage = {};
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useReactTable, getCoreRowModel } from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/table/data-table";
+import { Campaign, columns } from "./campaign-tables/columns";
+import { CampaignTableAction } from "./campaign-tables/campaign-table-action";
+import { CampaignFilters } from "./campaign-tables/campaign-filters";
 
-export default async function ProductListingPage({}: ProductListingPage) {
-  // Showcasing the use of search params cache in nested RSCs
-  const page = searchParamsCache.get("page");
-  const search = searchParamsCache.get("q");
-  const pageLimit = searchParamsCache.get("limit");
-  const categories = searchParamsCache.get("categories");
+export function CampaignListing() {
+  const [filters, setFilters] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filters = {
-    page,
-    limit: pageLimit,
-    ...(search && { search }),
-    ...(categories && { categories: categories }),
-  };
+  const { data: campaigns = [], isLoading } = useQuery({
+    queryKey: ["campaigns", filters, searchQuery],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        ...filters,
+        search: searchQuery,
+      }).toString();
 
-  const data = await fakeProducts.getProducts(filters);
-  const totalProducts = data.total_products;
-  const products: Product[] = data.products;
+      const response = await fetch(`/api/campaigns?${params}`);
+      return response.json();
+    },
+  });
+
+  const table = useReactTable({
+    data: campaigns,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
-    <ProductTable
-      columns={columns}
-      data={products}
-      totalItems={totalProducts}
-    />
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <CampaignFilters
+          table={table}
+          filters={filters}
+          onFilterChange={setFilters}
+        />
+        <CampaignTableAction
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+      </div>
+      <DataTable<Campaign, unknown>
+        columns={columns}
+        data={campaigns}
+        isLoading={isLoading}
+      />
+    </div>
   );
 }

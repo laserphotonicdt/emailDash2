@@ -22,7 +22,7 @@ export type Campaign = {
 export const columns: ColumnDef<Campaign>[] = [
   {
     accessorKey: "date",
-    header: "Date",
+    header: () => "Date",
     enableHiding: true,
     cell: ({ row }) => {
       const date = new Date(row.getValue("date"));
@@ -32,47 +32,47 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "campaign_name_id",
-    header: "Campaign ID",
+    header: () => "Campaign ID",
     enableHiding: true,
   },
   {
     accessorKey: "subjectLine",
-    header: "Subject Line",
+    header: () => "Subject Line",
     enableHiding: true,
   },
   {
     accessorKey: "owner",
-    header: "Owner",
+    header: () => "Owner",
     enableHiding: true,
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: () => "Status",
     enableHiding: true,
   },
   {
     accessorKey: "total_emails_sent",
-    header: "Sent",
+    header: () => "Sent",
     enableHiding: true,
   },
   {
     accessorKey: "total_emails_delivered",
-    header: "Delivered",
+    header: () => "Delivered",
     enableHiding: true,
   },
   {
     accessorKey: "total_emails_opened",
-    header: "Opened",
+    header: () => "Opened",
     enableHiding: true,
   },
   {
     accessorKey: "total_clicks",
-    header: "Clicks",
+    header: () => "Clicks",
     enableHiding: true,
   },
   {
     accessorKey: "deliverability",
-    header: "Deliverability",
+    header: () => "Deliverability",
     enableHiding: true,
     cell: ({ row }) => {
       const value = Number(row.getValue("deliverability"));
@@ -81,7 +81,7 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "open_rate",
-    header: "Open Rate",
+    header: () => "Open Rate",
     enableHiding: true,
     cell: ({ row }) => {
       const value = Number(row.getValue("open_rate"));
@@ -90,7 +90,7 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "clickthrough_rate",
-    header: "Click Through",
+    header: () => "Click Through",
     enableHiding: true,
     cell: ({ row }) => {
       const value = Number(row.getValue("clickthrough_rate"));

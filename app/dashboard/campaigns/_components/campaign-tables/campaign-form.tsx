@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function EmployeeForm({ onSuccess }: { onSuccess: () => void }) {
+export function CampaignForm({ onSuccess }: { onSuccess: () => void }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
@@ -23,7 +23,7 @@ export function EmployeeForm({ onSuccess }: { onSuccess: () => void }) {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/employees", {
+      const response = await fetch("/api/Campaigns", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,14 +32,14 @@ export function EmployeeForm({ onSuccess }: { onSuccess: () => void }) {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create employee");
+        throw new Error("Failed to create Campaign");
       }
 
       setOpen(false);
       onSuccess();
     } catch (error) {
-      console.error("Error creating employee:", error);
-      alert("Failed to create employee");
+      console.error("Error creating Campaign:", error);
+      alert("Failed to create Campaign");
     } finally {
       setIsLoading(false);
     }
@@ -48,11 +48,11 @@ export function EmployeeForm({ onSuccess }: { onSuccess: () => void }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Create Employee</Button>
+        <Button>Create Campaign</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create New Employee</DialogTitle>
+          <DialogTitle>Create New Campaign</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -74,7 +74,7 @@ export function EmployeeForm({ onSuccess }: { onSuccess: () => void }) {
             />
           </div>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Creating..." : "Create Employee"}
+            {isLoading ? "Creating..." : "Create Campaign"}
           </Button>
         </form>
       </DialogContent>

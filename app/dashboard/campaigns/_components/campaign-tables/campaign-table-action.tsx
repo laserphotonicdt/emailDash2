@@ -14,5 +14,9 @@ export function CampaignTableAction({
   searchQuery,
   onSearchChange,
 }: CampaignTableActionProps) {
-  return <div className="flex items-center gap-2"></div>;
+  return (
+    <div className="flex items-center gap-2 ml-4">
+      campaign-table-actions file is empty
+    </div>
+  );
 }

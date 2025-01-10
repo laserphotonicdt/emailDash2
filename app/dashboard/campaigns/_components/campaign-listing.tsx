@@ -7,7 +7,7 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
 } from "@tanstack/react-table";
-import { DataTable } from "../../../../components/ui/table/data-table";
+import { DataTable } from "@/components/ui/table/data-table";
 import { Campaign, columns } from "./campaign-tables/columns";
 import { CampaignTableAction } from "./campaign-tables/campaign-table-action";
 import { CampaignFilters } from "./campaign-tables/campaign-filters";

@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Filter } from "lucide-react";
+import { Filter, Eye } from "lucide-react";
 import { Table, type VisibilityState } from "@tanstack/react-table";
 import { useState } from "react";
 
@@ -96,7 +96,13 @@ export function CampaignFilters<TData>({
       <div className="flex gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button
+              variant="outline"
+              className="ml-auto"
+              effect="expandIcon"
+              icon={Eye}
+              iconPlacement="left"
+            >
               Columns
             </Button>
           </DropdownMenuTrigger>

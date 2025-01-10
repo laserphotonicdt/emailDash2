@@ -7,7 +7,7 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
 } from "@tanstack/react-table";
-import { DataTable } from "@/components/ui/table/data-table";
+import { DataTable } from "../../../../components/ui/table/data-table";
 import { Campaign, columns } from "./campaign-tables/columns";
 import { CampaignTableAction } from "./campaign-tables/campaign-table-action";
 import { CampaignFilters } from "./campaign-tables/campaign-filters";
@@ -30,15 +30,17 @@ export function CampaignListing() {
       return data.map((campaign: any) => ({
         id: campaign.id,
         date: campaign.date,
-        startDate: campaign.start_date,
-        endDate: campaign.end_date,
-        emailCategory: campaign.email_category,
         campaignName: campaign.campaign_name,
         subjectLine: campaign.subject_line,
         owner: campaign.owner,
         status: campaign.status,
-        industryVertical: campaign.industry_vertical,
-        senderUrl: campaign.sender_url,
+        total_emails_sent: campaign.total_emails_sent,
+        total_emails_delivered: campaign.total_emails_delivered,
+        total_emails_opened: campaign.total_emails_opened,
+        total_clicks: campaign.total_clicks,
+        deliverability: campaign.deliverability,
+        open_rate: campaign.open_rate,
+        clickthrough_rate: campaign.clickthrough_rate,
       }));
     },
   });

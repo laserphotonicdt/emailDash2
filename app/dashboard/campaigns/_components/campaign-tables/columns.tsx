@@ -6,15 +6,17 @@ import { CellAction } from "./cell-action";
 export type Campaign = {
   id: string;
   date: string;
-  startDate: string;
-  endDate: string;
-  emailCategory: string;
-  campaignName: string;
+  campaign_name_id: string;
   subjectLine: string;
   owner: string;
   status: string;
-  industryVertical: string;
-  senderUrl: string;
+  total_emails_sent: number;
+  total_emails_delivered: number;
+  total_emails_opened: number;
+  total_clicks: number;
+  deliverability: number;
+  open_rate: number;
+  clickthrough_rate: number;
 };
 
 export const columns: ColumnDef<Campaign>[] = [
@@ -29,33 +31,8 @@ export const columns: ColumnDef<Campaign>[] = [
     },
   },
   {
-    accessorKey: "startDate",
-    header: "Start Date",
-    enableHiding: true,
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("startDate"));
-      const formatted = date.toLocaleDateString();
-      return <div className="font-medium">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "endDate",
-    header: "End Date",
-    enableHiding: true,
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("endDate"));
-      const formatted = date.toLocaleDateString();
-      return <div className="font-medium">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "emailCategory",
-    header: "Category",
-    enableHiding: true,
-  },
-  {
-    accessorKey: "campaignName",
-    header: "Name",
+    accessorKey: "campaign_name_id",
+    header: "Campaign ID",
     enableHiding: true,
   },
   {
@@ -74,14 +51,51 @@ export const columns: ColumnDef<Campaign>[] = [
     enableHiding: true,
   },
   {
-    accessorKey: "industryVertical",
-    header: "Vertical",
+    accessorKey: "total_emails_sent",
+    header: "Sent",
     enableHiding: true,
   },
   {
-    accessorKey: "senderUrl",
-    header: "Sender URL",
+    accessorKey: "total_emails_delivered",
+    header: "Delivered",
     enableHiding: true,
+  },
+  {
+    accessorKey: "total_emails_opened",
+    header: "Opened",
+    enableHiding: true,
+  },
+  {
+    accessorKey: "total_clicks",
+    header: "Clicks",
+    enableHiding: true,
+  },
+  {
+    accessorKey: "deliverability",
+    header: "Deliverability",
+    enableHiding: true,
+    cell: ({ row }) => {
+      const value = Number(row.getValue("deliverability"));
+      return <div className="font-medium">{value.toFixed(2)}%</div>;
+    },
+  },
+  {
+    accessorKey: "open_rate",
+    header: "Open Rate",
+    enableHiding: true,
+    cell: ({ row }) => {
+      const value = Number(row.getValue("open_rate"));
+      return <div className="font-medium">{value.toFixed(2)}%</div>;
+    },
+  },
+  {
+    accessorKey: "clickthrough_rate",
+    header: "Click Through",
+    enableHiding: true,
+    cell: ({ row }) => {
+      const value = Number(row.getValue("clickthrough_rate"));
+      return <div className="font-medium">{value.toFixed(2)}%</div>;
+    },
   },
   {
     id: "actions",

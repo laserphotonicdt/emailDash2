@@ -10,7 +10,23 @@ export async function GET(request: Request) {
 
   let query = supabase
     .from("campaigns")
-    .select("*")
+    .select(
+      `
+      id,
+      date,
+      campaign_name_id,
+      subject_line,
+      owner,
+      status,
+      total_emails_sent,
+      total_emails_delivered,
+      total_emails_opened,
+      total_clicks,
+      deliverability,
+      open_rate,
+      clickthrough_rate
+    `,
+    )
     .order("date", { ascending: false });
 
   // Apply filters
@@ -30,7 +46,7 @@ export async function GET(request: Request) {
     query = query.eq("mail_server", filters.mailServer);
   }
   if (filters.search) {
-    query = query.ilike("campaign_name", `%${filters.search}%`);
+    query = query.ilike("campaign_name_id", `%${filters.search}%`);
   }
 
   const { data, error } = await query;
@@ -39,5 +55,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  // Transform snake_case to camelCase to match column definitions
+  const transformedData = data?.map((campaign: any) => ({
+    ...campaign,
+    campaign_name_id: campaign.campaign_name_id,
+    subjectLine: campaign.subject_line,
+  }));
+
+  return NextResponse.json(transformedData);
 }

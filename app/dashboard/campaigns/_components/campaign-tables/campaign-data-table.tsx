@@ -69,14 +69,15 @@ export function CampaignDataTable<TData, TValue>({
       <div className="flex items-center justify-between">
         <div className="flex items-center py-4">
           <Input
-            placeholder="Search campaigns..."
+            placeholder="Search campaign IDs..."
             value={
-              (table.getColumn("campaignName")?.getFilterValue() as string) ??
-              ""
+              (table
+                .getColumn("campaign_name_id")
+                ?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
               table
-                .getColumn("campaignName")
+                .getColumn("campaign_name_id")
                 ?.setFilterValue(event.target.value)
             }
             className="max-w-sm"

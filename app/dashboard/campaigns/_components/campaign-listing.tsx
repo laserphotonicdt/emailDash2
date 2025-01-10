@@ -47,6 +47,7 @@ export function CampaignListing() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   const table = useReactTable({
     data: campaigns,
@@ -54,8 +55,10 @@ export function CampaignListing() {
     getCoreRowModel: getCoreRowModel(),
     state: {
       pagination,
+      columnVisibility,
     },
     onPaginationChange: setPagination,
+    onColumnVisibilityChange: setColumnVisibility,
     getPaginationRowModel: getPaginationRowModel(),
   });
 
@@ -66,6 +69,8 @@ export function CampaignListing() {
           table={table}
           filters={filters}
           onFilterChange={setFilters}
+          columnVisibility={columnVisibility}
+          onColumnVisibilityChange={setColumnVisibility}
         />
         <CampaignTableAction
           searchQuery={searchQuery}
@@ -86,6 +91,8 @@ export function CampaignListing() {
           canNextPage: table.getCanNextPage(),
           pageOptions: [10, 25, 50, 100, 200],
         }}
+        columnVisibility={columnVisibility}
+        onColumnVisibilityChange={setColumnVisibility}
       />
     </div>
   );

@@ -8,6 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
+  type OnChangeFn,
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table";
@@ -51,6 +52,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   isLoading?: boolean;
   pagination?: PaginationProps;
+  children?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -58,9 +60,14 @@ export function DataTable<TData, TValue>({
   data,
   isLoading,
   pagination,
-}: DataTableProps<TData, TValue>) {
+  children,
+  columnVisibility,
+  onColumnVisibilityChange,
+}: DataTableProps<TData, TValue> & {
+  columnVisibility: VisibilityState;
+  onColumnVisibilityChange: OnChangeFn<VisibilityState>;
+}) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const table = useReactTable({
     data,
@@ -70,7 +77,7 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
     onSortingChange: setSorting,
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: onColumnVisibilityChange,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -79,35 +86,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex-1"></div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <div className="flex items-center justify-end">{children}</div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>

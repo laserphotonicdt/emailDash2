@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ColumnDef, Row } from "@tanstack/react-table";
 
 export const EmployeeSchema = z.object({
   id: z.number(),
@@ -22,6 +23,33 @@ export const EmployeeSchema = z.object({
 });
 
 export type Employee = z.infer<typeof EmployeeSchema>;
+
+export function exportToCSV<T>(
+  data: Row<T>[],
+  columns: ColumnDef<T>[],
+  filename: string,
+) {
+  const headers = columns
+    .filter((col) => col.id !== "actions")
+    .map((col) => col.header?.toString() || col.id);
+
+  const rows = data.map((row) =>
+    columns
+      .filter((col) => col.id !== "actions")
+      .map((col) => {
+        const value = row.getValue(col.id!);
+        return typeof value === "number" ? value.toString() : value;
+      })
+      .join(","),
+  );
+
+  const csvContent = [headers.join(","), ...rows].join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${filename}.csv`;
+  link.click();
+}
 
 export function parseEmployeeData(data: unknown) {
   try {

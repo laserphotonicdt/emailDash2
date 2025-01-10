@@ -6,15 +6,23 @@ import {
   useReactTable,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  type SortingState,
+  type ColumnFiltersState,
+  type VisibilityState,
 } from "@tanstack/react-table";
-import { DataTable } from "@/components/ui/table/data-table";
 import { Campaign, columns } from "./campaign-tables/columns";
 import { CampaignTableAction } from "./campaign-tables/campaign-table-action";
 import { CampaignFilters } from "./campaign-tables/campaign-filters";
+import { CampaignDataTable } from "./campaign-tables/campaign-data-table";
 
 export function CampaignListing() {
   const [filters, setFilters] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const { data: campaigns = [], isLoading } = useQuery({
     queryKey: ["campaigns", filters, searchQuery],
@@ -30,7 +38,7 @@ export function CampaignListing() {
       return data.map((campaign: any) => ({
         id: campaign.id,
         date: campaign.date,
-        campaignName: campaign.campaign_name,
+        campaign_name_id: campaign.campaign_name,
         subjectLine: campaign.subject_line,
         owner: campaign.owner,
         status: campaign.status,
@@ -41,26 +49,28 @@ export function CampaignListing() {
         deliverability: campaign.deliverability,
         open_rate: campaign.open_rate,
         clickthrough_rate: campaign.clickthrough_rate,
+        industryVertical: campaign.industry_vertical,
+        senderUrl: campaign.sender_url,
       }));
     },
   });
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-  const [columnVisibility, setColumnVisibility] = useState({});
-
   const table = useReactTable({
     data: campaigns,
     columns,
-    getCoreRowModel: getCoreRowModel(),
     state: {
-      pagination,
+      sorting,
+      columnFilters,
       columnVisibility,
     },
-    onPaginationChange: setPagination,
+    enableSorting: true,
+    enableMultiSort: true,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
@@ -79,22 +89,11 @@ export function CampaignListing() {
           onSearchChange={setSearchQuery}
         />
       </div>
-      <DataTable<Campaign, unknown>
+      <CampaignDataTable
         columns={columns}
         data={campaigns}
         isLoading={isLoading}
-        pagination={{
-          pageIndex: pagination.pageIndex,
-          pageSize: pagination.pageSize,
-          pageCount: table.getPageCount(),
-          setPageIndex: table.setPageIndex,
-          setPageSize: table.setPageSize,
-          canPreviousPage: table.getCanPreviousPage(),
-          canNextPage: table.getCanNextPage(),
-          pageOptions: [10, 25, 50, 100, 200],
-        }}
-        columnVisibility={columnVisibility}
-        onColumnVisibilityChange={setColumnVisibility}
+        table={table}
       />
     </div>
   );

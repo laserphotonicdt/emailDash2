@@ -10,7 +10,20 @@ export function createClient() {
     {
       cookies: {
         get(name: string) {
-          return cookieStore.get(name)?.value;
+          const cookie = cookieStore.get(name)?.value;
+          if (!cookie) return undefined;
+
+          try {
+            // Handle base64 encoded cookies
+            if (cookie.startsWith("base64-")) {
+              const base64Value = cookie.slice(7);
+              return Buffer.from(base64Value, "base64").toString("utf-8");
+            }
+            return cookie;
+          } catch (error) {
+            console.error("Failed to parse cookie:", error);
+            return undefined;
+          }
         },
         set(name: string, value: string, options: CookieOptions) {
           try {

@@ -16,7 +16,18 @@ export function CampaignTableAction({
 }: CampaignTableActionProps) {
   return (
     <div className="flex items-center gap-2 ml-4">
-      campaign-table-actions file is empty
+      <Input
+        placeholder="Search campaigns..."
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="h-8 w-[150px] lg:w-[250px]"
+      />
+      <Button variant="outline" size="sm">
+        Export CSV
+      </Button>
+      <Button variant="outline" size="sm">
+        Export PDF
+      </Button>
     </div>
   );
 }

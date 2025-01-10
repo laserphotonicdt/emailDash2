@@ -1,25 +1,25 @@
-import { fakeProducts, Product } from "@/constants/mock-api";
+import { fakeCampaigns, Campaign } from "@/constants/mock-api";
 import { notFound } from "next/navigation";
-import ProductForm from "./campaign-form";
+import CampaignForm from "./campaign-form";
 
-type TProductViewPageProps = {
-  productId: string;
+type TCampaignViewPageProps = {
+  campaignId: string;
 };
 
-export default async function ProductViewPage({
-  productId,
-}: TProductViewPageProps) {
-  let product = null;
-  let pageTitle = "Create New Product";
+export default async function CampaignViewPage({
+  campaignId,
+}: TCampaignViewPageProps) {
+  let campaign = null;
+  let pageTitle = "Create New Campaign";
 
-  if (productId !== "new") {
-    const data = await fakeProducts.getProductById(Number(productId));
-    product = data.product as Product;
-    if (!product) {
+  if (campaignId !== "new") {
+    const data = await fakeCampaigns.getCampaignById(Number(campaignId));
+    campaign = data.campaign as Campaign;
+    if (!campaign) {
       notFound();
     }
-    pageTitle = `Edit Product`;
+    pageTitle = `Edit Campaign`;
   }
 
-  return <ProductForm initialData={product} pageTitle={pageTitle} />;
+  return <CampaignForm initialData={campaign} pageTitle={pageTitle} />;
 }

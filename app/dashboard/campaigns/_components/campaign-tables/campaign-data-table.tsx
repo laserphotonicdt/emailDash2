@@ -6,8 +6,12 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useCampaignTableFilters } from "./use-campaign-table-filters";
+import { ArrowUpDown } from "lucide-react";
+import { ColumnVisibilityDropdown } from "./column-visibility-dropdown";
 import {
   Select,
   SelectContent,
@@ -24,59 +28,36 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
 import { Campaign } from "./columns";
 
-interface DataTableProps<TData extends Campaign> {
-  columns: ColumnDef<TData>[];
-  data: TData[];
+interface DataTableProps {
+  columns: ColumnDef<Campaign>[];
+  data: Campaign[];
   isLoading?: boolean;
 }
 
-export function CampaignDataTable<TData extends Campaign>({
+export function CampaignDataTable({
   columns,
   data,
   isLoading = false,
-}: DataTableProps<TData>) {
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
-
-  const pagination = {
-    pageIndex,
-    pageSize,
-  };
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination,
-    },
-    onPaginationChange: (updater) => {
-      if (typeof updater === "function") {
-        const newState = updater(pagination);
-        setPageIndex(newState.pageIndex);
-        setPageSize(newState.pageSize);
-      }
-    },
-    manualPagination: false,
-    pageCount: Math.ceil(data.length / pageSize),
-  });
+}: DataTableProps) {
+  const { table } = useCampaignTableFilters({ data, columns });
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
+          <ColumnVisibilityDropdown table={table} />
           <Select
-            value={pageSize.toString()}
-            onValueChange={(value) => {
+            value={`${table.getState().pagination.pageSize}`}
+            onValueChange={(value: string) => {
               table.setPageSize(Number(value));
             }}
           >
             <SelectTrigger className="h-8 w-[150px]">
-              <SelectValue placeholder={`${pageSize} per page`} />
+              <SelectValue
+                placeholder={`${table.getState().pagination.pageSize} per page`}
+              />
             </SelectTrigger>
             <SelectContent side="top">
               {[10, 20, 50, 100].map((pageSize) => (
@@ -96,12 +77,24 @@ export function CampaignDataTable<TData extends Campaign>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
+                    {header.isPlaceholder ? null : (
+                      <div
+                        className={`flex items-center space-x-2 ${
+                          header.column.getCanSort()
+                            ? "cursor-pointer select-none"
+                            : ""
+                        }`}
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        {flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
+                        {header.column.getCanSort() && (
+                          <ArrowUpDown className="h-4 w-4" />
+                        )}
+                      </div>
+                    )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -157,7 +150,7 @@ export function CampaignDataTable<TData extends Campaign>({
             <p className="text-sm font-medium">Rows per page</p>
             <Select
               value={`${table.getState().pagination.pageSize}`}
-              onValueChange={(value) => {
+              onValueChange={(value: string) => {
                 table.setPageSize(Number(value));
               }}
             >

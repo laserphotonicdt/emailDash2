@@ -25,7 +25,9 @@ export type Campaign = {
 export const columns: ColumnDef<Campaign>[] = [
   {
     accessorKey: "date",
-    header: "Date",
+    header: ({ column }) => {
+      return <div className="flex items-center">Date</div>;
+    },
     enableHiding: true,
     enableSorting: true,
     sortingFn: (rowA, rowB) => {
@@ -41,19 +43,25 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "campaign_name_id",
-    header: "Campaign ID",
+    header: ({ column }) => {
+      return <div className="flex items-center">Campaign ID</div>;
+    },
     enableHiding: true,
     enableSorting: true,
   },
   {
     accessorKey: "subjectLine",
-    header: "Subject Line",
+    header: ({ column }) => {
+      return <div className="flex items-center">Subject Line</div>;
+    },
     enableHiding: true,
     enableSorting: true,
   },
   {
     accessorKey: "owner",
-    header: "Owner",
+    header: ({ column }) => {
+      return <div className="flex items-center">Owner</div>;
+    },
     enableHiding: true,
     enableSorting: true,
   },
@@ -64,31 +72,41 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "total_emails_sent",
-    header: "Sent",
+    header: ({ column }) => {
+      return <div className="flex items-center">Sent</div>;
+    },
     enableHiding: true,
     enableSorting: true,
   },
   {
     accessorKey: "total_emails_delivered",
-    header: "Delivered",
+    header: ({ column }) => {
+      return <div className="flex items-center">Delivered</div>;
+    },
     enableHiding: true,
     enableSorting: true,
   },
   {
     accessorKey: "total_emails_opened",
-    header: "Opened",
+    header: ({ column }) => {
+      return <div className="flex items-center">Opened</div>;
+    },
     enableHiding: true,
     enableSorting: true,
   },
   {
     accessorKey: "total_clicks",
-    header: "Clicks",
+    header: ({ column }) => {
+      return <div className="flex items-center">Clicks</div>;
+    },
     enableHiding: true,
     enableSorting: true,
   },
   {
     accessorKey: "deliverability",
-    header: "Deliverability",
+    header: ({ column }) => {
+      return <div className="flex items-center">Deliverability</div>;
+    },
     enableHiding: true,
     enableSorting: true,
     cell: ({ row }) => {
@@ -98,7 +116,9 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "open_rate",
-    header: "Open Rate",
+    header: ({ column }) => {
+      return <div className="flex items-center">Open Rate</div>;
+    },
     enableHiding: true,
     enableSorting: true,
     cell: ({ row }) => {
@@ -108,7 +128,9 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "clickthrough_rate",
-    header: "Click Through",
+    header: ({ column }) => {
+      return <div className="flex items-center">Click Through</div>;
+    },
     enableHiding: true,
     enableSorting: true,
     cell: ({ row }) => {
@@ -118,13 +140,17 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "industryVertical",
-    header: "Industry",
+    header: ({ column }) => {
+      return <div className="flex items-center">Industry</div>;
+    },
     enableHiding: true,
     enableSorting: true,
   },
   {
     accessorKey: "senderUrl",
-    header: "Sender URL",
+    header: ({ column }) => {
+      return <div className="flex items-center">Sender URL</div>;
+    },
     enableHiding: true,
     enableSorting: true,
     cell: ({ row }) => {

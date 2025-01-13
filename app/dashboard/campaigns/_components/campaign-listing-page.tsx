@@ -97,12 +97,12 @@ export default function CampaignListingPage() {
 
   return (
     <PageContainer scrollable>
-      <div className="space-y-4 space-x-4 mb-5">
+      <div className="space-y-4 space-x-4 mb-5 mr-4">
         <h1 className="text-2xl font-bold ml-5">Campaign Overview</h1>
         {metrics && (
           <>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card>
+              <Card className="p-6">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     Total Sent
@@ -132,7 +132,7 @@ export default function CampaignListingPage() {
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="p-6">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     Delivered
@@ -166,7 +166,7 @@ export default function CampaignListingPage() {
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="p-6">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Opened</CardTitle>
                   <svg
@@ -197,7 +197,7 @@ export default function CampaignListingPage() {
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="p-6">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Clicked</CardTitle>
                   <svg

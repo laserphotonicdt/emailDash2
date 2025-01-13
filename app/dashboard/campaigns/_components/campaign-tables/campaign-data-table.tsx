@@ -3,12 +3,18 @@
 import {
   ColumnDef,
   flexRender,
-  Table as TableType,
-  Row,
-  Header,
-  Cell,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
-
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -18,8 +24,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { CampaignFilters } from "./campaign-filters";
-import { exportToCSV } from "@/lib/data-utils";
 import { Download } from "lucide-react";
 import { Campaign } from "./columns";
 
@@ -27,116 +31,81 @@ interface DataTableProps<TData extends Campaign> {
   columns: ColumnDef<TData>[];
   data: TData[];
   isLoading?: boolean;
-  table: TableType<TData>;
 }
 
 export function CampaignDataTable<TData extends Campaign>({
   columns,
   data,
   isLoading = false,
-  table,
 }: DataTableProps<TData>) {
-  const handleExport = () => {
-    const rows = table.getRowModel().rows;
-    exportToCSV(rows, columns, "campaigns");
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+
+  const pagination = {
+    pageIndex,
+    pageSize,
   };
 
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      pagination,
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const newState = updater(pagination);
+        setPageIndex(newState.pageIndex);
+        setPageSize(newState.pageSize);
+      }
+    },
+    manualPagination: false,
+    pageCount: Math.ceil(data.length / pageSize),
+  });
+
   return (
-    <>
-      <div className="flex items-center justify-end mb-4">
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-2"
-          onClick={handleExport}
-        >
-          <Download className="mr-2 h-4 w-4" />
-          Export CSV
-        </Button>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Select
+            value={pageSize.toString()}
+            onValueChange={(value) => {
+              table.setPageSize(Number(value));
+            }}
+          >
+            <SelectTrigger className="h-8 w-[150px]">
+              <SelectValue placeholder={`${pageSize} per page`} />
+            </SelectTrigger>
+            <SelectContent side="top">
+              {[10, 20, 50, 100].map((pageSize) => (
+                <SelectItem key={pageSize} value={`${pageSize}`}>
+                  {pageSize} rows
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      {/* Table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {table
-              .getHeaderGroups()
-              .map(
-                (headerGroup: {
-                  id: string;
-                  headers: Header<TData, unknown>[];
-                }) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map(
-                      (header: Header<TData, unknown>) => (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder ? null : (
-                            <div
-                              className={
-                                header.column.getCanSort()
-                                  ? "flex items-center space-x-2 cursor-pointer select-none"
-                                  : ""
-                              }
-                              onClick={header.column.getToggleSortingHandler()}
-                            >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                              {header.column.getCanSort() && (
-                                <span className="ml-2 relative w-4 h-4 text-muted-foreground">
-                                  {header.column.getIsSorted() === "asc" && (
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      strokeWidth="2"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      className="w-4 h-4 transition-transform"
-                                    >
-                                      <path d="m18 15-6-6-6 6" />
-                                    </svg>
-                                  )}
-                                  {header.column.getIsSorted() === "desc" && (
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      strokeWidth="2"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      className="w-4 h-4 transition-transform"
-                                    >
-                                      <path d="m6 9 6 6 6-6" />
-                                    </svg>
-                                  )}
-                                  {!header.column.getIsSorted() && (
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      strokeWidth="2"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      className="w-4 h-4 transition-transform opacity-50"
-                                    >
-                                      <path d="m6 9 6 6 6-6" />
-                                    </svg>
-                                  )}
-                                </span>
-                              )}
-                            </div>
-                          )}
-                        </TableHead>
-                      ),
-                    )}
-                  </TableRow>
-                ),
-              )}
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
           </TableHeader>
           <TableBody>
             {isLoading ? (
@@ -149,12 +118,12 @@ export function CampaignDataTable<TData extends Campaign>({
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row: Row<TData>) => (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell: Cell<TData, unknown>) => (
+                  {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -170,7 +139,7 @@ export function CampaignDataTable<TData extends Campaign>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No campaigns found.
+                  No results.
                 </TableCell>
               </TableRow>
             )}
@@ -178,25 +147,58 @@ export function CampaignDataTable<TData extends Campaign>({
         </Table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+      <div className="flex items-center justify-between px-2">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+        <div className="flex items-center space-x-6 lg:space-x-8">
+          <div className="flex items-center space-x-2">
+            <p className="text-sm font-medium">Rows per page</p>
+            <Select
+              value={`${table.getState().pagination.pageSize}`}
+              onValueChange={(value) => {
+                table.setPageSize(Number(value));
+              }}
+            >
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[10, 20, 50, 100].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -5,11 +5,17 @@ import {
   ColumnFiltersState,
   SortingState,
   VisibilityState,
+  RowSelectionState,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  ColumnDef,
+  Table as TableType,
+  Row,
+  Header,
+  Cell,
 } from "@tanstack/react-table";
 import { Campaign } from "./columns";
 
@@ -17,20 +23,20 @@ export function useCampaignTableFilters(data: Campaign[]) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const table = useReactTable({
     data,
-    columns: [],
+    columns: data && data.length > 0 ? Object.values(Campaign) : [], // Ensure columns are defined
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    getCoreRowModel: getCoreRowModel,
+    getPaginationRowModel: getPaginationRowModel,
+    getSortedRowModel: getSortedRowModel,
+    getFilteredRowModel: getFilteredRowModel,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: {
+    initialState: {
       sorting,
       columnFilters,
       columnVisibility,

@@ -38,71 +38,12 @@ export function CampaignFilters<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="h-8">
-              <Filter className="mr-2 h-4 w-4" />
-              Filters
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table.getColumn("industryVertical") && (
-              <DropdownMenuCheckboxItem
-                checked={!!filters.industry}
-                onCheckedChange={(value) =>
-                  onFilterChange({ ...filters, industry: value ? "true" : "" })
-                }
-              >
-                Industry
-              </DropdownMenuCheckboxItem>
-            )}
-            {table.getColumn("owner") && (
-              <DropdownMenuCheckboxItem
-                checked={!!filters.owner}
-                onCheckedChange={(value) =>
-                  onFilterChange({ ...filters, owner: value ? "true" : "" })
-                }
-              >
-                Owner
-              </DropdownMenuCheckboxItem>
-            )}
-            {table.getColumn("status") && (
-              <DropdownMenuCheckboxItem
-                checked={!!filters.status}
-                onCheckedChange={(value) =>
-                  onFilterChange({ ...filters, status: value ? "true" : "" })
-                }
-              >
-                Status
-              </DropdownMenuCheckboxItem>
-            )}
-            {table.getColumn("senderUrl") && (
-              <DropdownMenuCheckboxItem
-                checked={!!filters.mailServer}
-                onCheckedChange={(value) =>
-                  onFilterChange({
-                    ...filters,
-                    mailServer: value ? "true" : "",
-                  })
-                }
-              >
-                Mail Server
-              </DropdownMenuCheckboxItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
       <div className="flex gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="ml-auto"
-              effect="expandIcon"
-              icon={Eye}
-              iconPlacement="left"
-            >
+            <Button variant="outline" size="sm" className="h-8 px-2">
+              <Eye className="mr-2 h-4 w-4" />
               Columns
             </Button>
           </DropdownMenuTrigger>
@@ -115,12 +56,13 @@ export function CampaignFilters<TData>({
                   <DropdownMenuCheckboxItem
                     key={column.id}
                     className="capitalize"
-                    checked={column.getIsVisible()}
+                    checked={columnVisibility[column.id] !== false}
                     onCheckedChange={(value) => {
-                      column.toggleVisibility(!!value);
-                      onColumnVisibilityChange(
-                        table.getState().columnVisibility,
-                      );
+                      const newVisibility = {
+                        ...columnVisibility,
+                        [column.id]: value,
+                      };
+                      onColumnVisibilityChange(newVisibility);
                     }}
                   >
                     {column.id}

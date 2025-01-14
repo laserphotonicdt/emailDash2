@@ -11,7 +11,6 @@ import {
 } from "@tanstack/react-table";
 import { useCampaignTableFilters } from "./use-campaign-table-filters";
 import { ArrowUpDown } from "lucide-react";
-import { ColumnVisibilityDropdown } from "./column-visibility-dropdown";
 import {
   Select,
   SelectContent,
@@ -29,6 +28,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Campaign } from "./columns";
+import { CampaignFilters } from "./campaign-filters";
 
 interface DataTableProps {
   columns: ColumnDef<Campaign>[];
@@ -41,35 +41,35 @@ export function CampaignDataTable({
   data,
   isLoading = false,
 }: DataTableProps) {
-  const { table } = useCampaignTableFilters({ data, columns });
+  const {
+    table,
+    columnVisibility,
+    setColumnVisibility,
+    columnFilters,
+    setColumnFilters,
+  } = useCampaignTableFilters({ data, columns });
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <ColumnVisibilityDropdown table={table} />
-          <Select
-            value={`${table.getState().pagination.pageSize}`}
-            onValueChange={(value: string) => {
-              table.setPageSize(Number(value));
-            }}
-          >
-            <SelectTrigger className="h-8 w-[150px]">
-              <SelectValue
-                placeholder={`${table.getState().pagination.pageSize} per page`}
-              />
-            </SelectTrigger>
-            <SelectContent side="top">
-              {[10, 20, 50, 100].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize} rows
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
+      <CampaignFilters
+        table={table}
+        filters={columnFilters.reduce(
+          (acc, filter) => ({
+            ...acc,
+            [filter.id]: filter.value,
+          }),
+          {},
+        )}
+        onFilterChange={(filters) => {
+          const newFilters = Object.entries(filters).map(([id, value]) => ({
+            id,
+            value: value || undefined,
+          }));
+          setColumnFilters(newFilters);
+        }}
+        columnVisibility={columnVisibility}
+        onColumnVisibilityChange={setColumnVisibility}
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

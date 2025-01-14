@@ -3,9 +3,14 @@
 import {
   ColumnDef,
   flexRender,
-  type Table as TableType,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
-import { ArrowUpDown, Download } from "lucide-react";
+import { useCampaignTableFilters } from "./use-campaign-table-filters";
+import { ArrowUpDown } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -165,7 +170,6 @@ export function CampaignDataTable({
             className="ml-4"
             onClick={handleExportCSV}
           >
-            <Download className="mr-2 h-4 w-4" />
             Export CSV
           </Button>
         </div>
@@ -187,8 +191,6 @@ export function CampaignDataTable({
                 side="top"
                 align="end"
                 className="overflow-y-auto max-h-[200px]"
-                onOpenAutoFocus={(e) => e.preventDefault()}
-                onCloseAutoFocus={(e) => e.preventDefault()}
               >
                 {[10, 20, 50, 100].map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>

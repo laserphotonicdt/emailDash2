@@ -3,14 +3,9 @@
 import {
   ColumnDef,
   flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-  SortingState,
-  getSortedRowModel,
+  type Table as TableType,
 } from "@tanstack/react-table";
-import { useCampaignTableFilters } from "./use-campaign-table-filters";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Download } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -28,48 +23,66 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Campaign } from "./columns";
-import { CampaignFilters } from "./campaign-filters";
 
 interface DataTableProps {
   columns: ColumnDef<Campaign>[];
   data: Campaign[];
   isLoading?: boolean;
+  table: TableType<Campaign>;
 }
 
 export function CampaignDataTable({
   columns,
   data,
   isLoading = false,
+  table,
 }: DataTableProps) {
-  const {
-    table,
-    columnVisibility,
-    setColumnVisibility,
-    columnFilters,
-    setColumnFilters,
-  } = useCampaignTableFilters({ data, columns });
+  const handleExportCSV = () => {
+    // Convert data to CSV format
+    const headers = columns
+      .filter((col) => "accessorKey" in col || "accessorFn" in col)
+      .map(
+        (col) => ("accessorKey" in col ? col.accessorKey : col.id) as string,
+      );
+
+    const csvContent = [
+      headers.join(","),
+      ...data.map((row) =>
+        headers
+          .map((header) => {
+            const value = row[header as keyof Campaign];
+            // Handle special formatting for percentage values
+            if (
+              typeof value === "number" &&
+              ["deliverability", "open_rate", "clickthrough_rate"].includes(
+                header,
+              )
+            ) {
+              return `${value}%`;
+            }
+            // Handle date formatting
+            if (header === "date") {
+              return new Date(row.date).toLocaleDateString();
+            }
+            return value;
+          })
+          .join(","),
+      ),
+    ].join("\n");
+
+    // Create and trigger download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "campaign_data.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="space-y-4">
-      <CampaignFilters
-        table={table}
-        filters={columnFilters.reduce(
-          (acc, filter) => ({
-            ...acc,
-            [filter.id]: filter.value,
-          }),
-          {},
-        )}
-        onFilterChange={(filters) => {
-          const newFilters = Object.entries(filters).map(([id, value]) => ({
-            id,
-            value: value || undefined,
-          }));
-          setColumnFilters(newFilters);
-        }}
-        columnVisibility={columnVisibility}
-        onColumnVisibilityChange={setColumnVisibility}
-      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -141,9 +154,20 @@ export function CampaignDataTable({
       </div>
 
       <div className="flex items-center justify-between px-2">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+        <div className="flex items-center space-x-4">
+          <div className="text-sm text-muted-foreground">
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} row(s) selected.
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-4"
+            onClick={handleExportCSV}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export CSV
+          </Button>
         </div>
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
@@ -159,7 +183,13 @@ export function CampaignDataTable({
                   placeholder={table.getState().pagination.pageSize}
                 />
               </SelectTrigger>
-              <SelectContent side="top">
+              <SelectContent
+                side="top"
+                align="end"
+                className="overflow-y-auto max-h-[200px]"
+                onOpenAutoFocus={(e) => e.preventDefault()}
+                onCloseAutoFocus={(e) => e.preventDefault()}
+              >
                 {[10, 20, 50, 100].map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>
                     {pageSize}
@@ -175,7 +205,7 @@ export function CampaignDataTable({
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
-              className="h-8 w-8 p-0"
+              className="h-8 w-16 p-0"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
@@ -183,7 +213,7 @@ export function CampaignDataTable({
             </Button>
             <Button
               variant="outline"
-              className="h-8 w-8 p-0"
+              className="h-8 w-16 p-0"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >

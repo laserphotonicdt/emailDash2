@@ -1,16 +1,15 @@
-"use client";
-
-import { ColumnDef } from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
 import { CellAction } from "./cell-action";
-import { ArrowUpDown } from "lucide-react";
 
-export type Campaign = {
+export interface Campaign {
   id: string;
-  date: string;
   campaign_name_id: string;
   subjectLine: string;
   owner: string;
   status: string;
+  date: string;
+  industryVertical: string;
+  senderUrl: string;
   total_emails_sent: number;
   total_emails_delivered: number;
   total_emails_opened: number;
@@ -18,157 +17,47 @@ export type Campaign = {
   deliverability: number;
   open_rate: number;
   clickthrough_rate: number;
-  industryVertical: string;
-  senderUrl: string;
-};
+}
 
-export const columns: ColumnDef<Campaign>[] = [
-  {
-    accessorKey: "date",
-    header: ({ column }) => {
-      return <div className="flex items-center">Date</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-    sortingFn: (rowA, rowB) => {
-      const dateA = new Date(rowA.getValue("date"));
-      const dateB = new Date(rowB.getValue("date"));
-      return dateA.getTime() - dateB.getTime();
-    },
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("date"));
-      const formatted = date.toLocaleDateString();
-      return <div className="font-medium">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "campaign_name_id",
-    header: ({ column }) => {
-      return <div className="flex items-center">Campaign ID</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-  },
-  {
-    accessorKey: "subjectLine",
-    header: ({ column }) => {
-      return <div className="flex items-center">Subject Line</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-  },
-  {
-    accessorKey: "owner",
-    header: ({ column }) => {
-      return <div className="flex items-center">Owner</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-  },
-  {
-    accessorKey: "status",
+const columnHelper = createColumnHelper<Campaign>();
+
+export const columns = [
+  columnHelper.accessor("date", {
+    header: "Date",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+  }),
+  columnHelper.accessor("campaign_name_id", {
+    header: "Campaign ID",
+  }),
+  columnHelper.accessor("subjectLine", {
+    header: "Subject Line",
+  }),
+  columnHelper.accessor("owner", {
+    header: "Owner",
+  }),
+  columnHelper.accessor("status", {
     header: "Status",
-    enableHiding: true,
-  },
-  {
-    accessorKey: "total_emails_sent",
-    header: ({ column }) => {
-      return <div className="flex items-center">Sent</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-  },
-  {
-    accessorKey: "total_emails_delivered",
-    header: ({ column }) => {
-      return <div className="flex items-center">Delivered</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-  },
-  {
-    accessorKey: "total_emails_opened",
-    header: ({ column }) => {
-      return <div className="flex items-center">Opened</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-  },
-  {
-    accessorKey: "total_clicks",
-    header: ({ column }) => {
-      return <div className="flex items-center">Clicks</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-  },
-  {
-    accessorKey: "deliverability",
-    header: ({ column }) => {
-      return <div className="flex items-center">Deliverability</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-    cell: ({ row }) => {
-      const value = Number(row.getValue("deliverability"));
-      return <div className="font-medium">{value.toFixed(2)}%</div>;
-    },
-  },
-  {
-    accessorKey: "open_rate",
-    header: ({ column }) => {
-      return <div className="flex items-center">Open Rate</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-    cell: ({ row }) => {
-      const value = Number(row.getValue("open_rate"));
-      return <div className="font-medium">{value.toFixed(2)}%</div>;
-    },
-  },
-  {
-    accessorKey: "clickthrough_rate",
-    header: ({ column }) => {
-      return <div className="flex items-center">Click Through</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-    cell: ({ row }) => {
-      const value = Number(row.getValue("clickthrough_rate"));
-      return <div className="font-medium">{value.toFixed(2)}%</div>;
-    },
-  },
-  {
-    accessorKey: "industryVertical",
-    header: ({ column }) => {
-      return <div className="flex items-center">Industry</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-  },
-  {
-    accessorKey: "senderUrl",
-    header: ({ column }) => {
-      return <div className="flex items-center">Sender URL</div>;
-    },
-    enableHiding: true,
-    enableSorting: true,
-    cell: ({ row }) => {
-      const url = row.getValue("senderUrl") as string;
-      return (
-        <a
-          href={url}
-          target="_blank"
-          rel="noreferrer"
-          className="text-blue-500 hover:underline"
-        >
-          {url}
-        </a>
-      );
-    },
-  },
-  {
+  }),
+  columnHelper.accessor("industryVertical", {
+    header: "Industry",
+  }),
+  columnHelper.accessor("total_emails_sent", {
+    header: "Sent",
+  }),
+  columnHelper.accessor("deliverability", {
+    header: "Deliverability",
+    cell: ({ getValue }) => `${getValue()}%`,
+  }),
+  columnHelper.accessor("open_rate", {
+    header: "Open Rate",
+    cell: ({ getValue }) => `${getValue()}%`,
+  }),
+  columnHelper.accessor("clickthrough_rate", {
+    header: "CTR",
+    cell: ({ getValue }) => `${getValue()}%`,
+  }),
+  columnHelper.display({
     id: "actions",
     cell: ({ row }) => <CellAction data={row.original} />,
-  },
+  }),
 ];

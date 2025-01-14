@@ -103,7 +103,7 @@ export default function CampaignListingPage() {
           <>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <Card className="p-6">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardHeader className="p-2 flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     Total Sent
                   </CardTitle>
@@ -123,7 +123,7 @@ export default function CampaignListingPage() {
                     <path d="m21.854 2.147-10.94 10.939" />
                   </svg>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-2">
                   <div className="text-2xl font-bold">
                     {metrics.total_emails_sent.toLocaleString()}
                   </div>
@@ -133,7 +133,7 @@ export default function CampaignListingPage() {
                 </CardContent>
               </Card>
               <Card className="p-6">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardHeader className="p-2 flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     Delivered
                   </CardTitle>
@@ -154,7 +154,7 @@ export default function CampaignListingPage() {
                     <path d="m16 19 2 2 4-4" />
                   </svg>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-2">
                   <div className="text-2xl font-bold">
                     {metrics.deliverability.toFixed(2)}%
                   </div>
@@ -167,7 +167,7 @@ export default function CampaignListingPage() {
                 </CardContent>
               </Card>
               <Card className="p-6">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardHeader className="p-2 flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Opened</CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -185,7 +185,7 @@ export default function CampaignListingPage() {
                     <path d="m22 10-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 10" />
                   </svg>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-2">
                   <div className="text-2xl font-bold">
                     {metrics.open_rate.toFixed(2)}%
                   </div>
@@ -198,7 +198,7 @@ export default function CampaignListingPage() {
                 </CardContent>
               </Card>
               <Card className="p-6">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardHeader className="p-2 flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Clicked</CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -219,7 +219,7 @@ export default function CampaignListingPage() {
                     <path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z" />
                   </svg>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-2">
                   <div className="text-2xl font-bold">
                     {metrics.clickthrough_rate.toFixed(2)}%
                   </div>

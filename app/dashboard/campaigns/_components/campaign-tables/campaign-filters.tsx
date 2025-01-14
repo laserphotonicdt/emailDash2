@@ -8,70 +8,75 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Filter, Eye } from "lucide-react";
-import { Table, type VisibilityState } from "@tanstack/react-table";
+import { Eye, Search, X } from "lucide-react";
+import { Table } from "@tanstack/react-table";
 import { useState } from "react";
 
-interface CampaignFiltersProps<TData> {
+interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
-  filters: Record<string, string>;
-  onFilterChange: (filters: Record<string, string>) => void;
-  columnVisibility: VisibilityState;
-  onColumnVisibilityChange: (visibility: VisibilityState) => void;
+  columnVisibility: Record<string, boolean>;
+  onColumnVisibilityChange: (visibility: Record<string, boolean>) => void;
 }
 
 export function CampaignFilters<TData>({
   table,
-  filters,
-  onFilterChange,
   columnVisibility,
   onColumnVisibilityChange,
-}: CampaignFiltersProps<TData>) {
+}: DataTableViewOptionsProps<TData>) {
+  const [globalFilter, setGlobalFilter] = useState("");
+
   return (
-    <div className="flex items-center justify-between size-full">
-      <div className="flex gap-2 mr-2">
-        <Input
-          placeholder="Search campaigns..."
-          value={filters.search || ""}
-          onChange={(e) =>
-            onFilterChange({ ...filters, search: e.target.value })
-          }
-          className="h-8 w-[150px] lg:w-[250px]"
-        />
+    <div className="flex items-center justify-between">
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="relative w-64">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search all columns..."
+            value={globalFilter ?? ""}
+            onChange={(e) => {
+              setGlobalFilter(e.target.value);
+              table.setGlobalFilter(e.target.value);
+            }}
+            className="h-9 pl-8"
+          />
+          {globalFilter && (
+            <button
+              onClick={() => {
+                setGlobalFilter("");
+                table.setGlobalFilter("");
+              }}
+              className="absolute right-2 top-2.5"
+            >
+              <X className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
+        </div>
       </div>
-      <div className="flex gap-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="h-8 px-2">
-              <Eye className="mr-2 h-4 w-4" />
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={columnVisibility[column.id] !== false}
-                    onCheckedChange={(value) => {
-                      const newVisibility = {
-                        ...columnVisibility,
-                        [column.id]: value,
-                      };
-                      onColumnVisibilityChange(newVisibility);
-                    }}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="ml-auto">
+            <Eye className="mr-2 h-4 w-4" />
+            View
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {table
+            .getAllColumns()
+            .filter((column) => column.getCanHide())
+            .map((column) => {
+              return (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              );
+            })}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
